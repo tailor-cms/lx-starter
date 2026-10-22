@@ -1,0 +1,5074 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "operationId": "Auth_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The email or password you entered is incorrect."
+          }
+        },
+        "summary": "User login",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/logout": {
+      "get": {
+        "operationId": "Auth_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User logged out successfully"
+          }
+        },
+        "summary": "User logout",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/change-password": {
+      "post": {
+        "operationId": "Auth_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangePasswordResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Current password is incorrect!"
+          }
+        },
+        "summary": "Change current password",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/forgot-password": {
+      "post": {
+        "operationId": "Auth_forgotPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset email sent if user exists"
+          }
+        },
+        "summary": "Request password reset",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "operationId": "Auth_resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Password reset successfully"
+          },
+          "400": {
+            "description": "Invalid or expired token"
+          }
+        },
+        "summary": "Reset password with token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/reset-password/token-status": {
+      "post": {
+        "operationId": "Auth_validateResetToken",
+        "parameters": [],
+        "responses": {
+          "202": {
+            "description": "Token is valid"
+          }
+        },
+        "summary": "Validate reset token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/integrations/{id}/clients": {
+      "get": {
+        "operationId": "IntegrationOAuthClients_list",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Integration ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by integration ID",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "isActive",
+            "required": false,
+            "in": "query",
+            "description": "Filter by active status",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "minimum": 1,
+              "default": 20,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Pagination offset",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of OAuth clients for this integration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedOAuthClientsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List OAuth clients for integration (Admin only)",
+        "tags": [
+          "integrations"
+        ]
+      },
+      "post": {
+        "operationId": "IntegrationOAuthClients_create",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Integration ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOAuthClientDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OAuth client created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthClientWithSecretResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create OAuth client for integration (Admin only)",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/integrations/{id}/clients/{clientId}": {
+      "get": {
+        "operationId": "IntegrationOAuthClients_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Integration ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "description": "OAuth client ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OAuth client found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthClientResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "OAuth client not found"
+          }
+        },
+        "summary": "Get integration OAuth client (Admin only)",
+        "tags": [
+          "integrations"
+        ]
+      },
+      "delete": {
+        "operationId": "IntegrationOAuthClients_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Integration ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "description": "OAuth client ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OAuth client deleted successfully"
+          }
+        },
+        "summary": "Delete integration OAuth client (Admin only)",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/integrations/{id}/clients/{clientId}/rotate-secret": {
+      "post": {
+        "operationId": "IntegrationOAuthClients_rotateSecret",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Integration ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "description": "OAuth client ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Client secret rotated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthClientWithSecretResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Rotate integration OAuth client secret (Admin only)",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/integrations": {
+      "get": {
+        "operationId": "Integrations_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of integrations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedIntegrationsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List integrations (Admin only)",
+        "tags": [
+          "integrations"
+        ]
+      },
+      "post": {
+        "operationId": "Integrations_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateIntegrationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Integration created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Integration already exists"
+          }
+        },
+        "summary": "Create integration (Admin only)",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/integrations/{id}": {
+      "get": {
+        "operationId": "Integrations_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Integration ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Integration found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Integration not found"
+          }
+        },
+        "summary": "Get integration by ID (Admin only)",
+        "tags": [
+          "integrations"
+        ]
+      },
+      "patch": {
+        "operationId": "Integrations_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Integration ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateIntegrationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Integration updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Integration not found"
+          }
+        },
+        "summary": "Update integration (Admin only)",
+        "tags": [
+          "integrations"
+        ]
+      },
+      "delete": {
+        "operationId": "Integrations_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Integration ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Integration deleted successfully"
+          },
+          "404": {
+            "description": "Integration not found"
+          }
+        },
+        "summary": "Delete integration (Admin only)",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/integrations/{id}/restore": {
+      "post": {
+        "operationId": "Integrations_restore",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Integration ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Integration restored successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrationResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Integration not found"
+          }
+        },
+        "summary": "Restore soft-deleted integration (Admin only)",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/oidc": {
+      "get": {
+        "description": "\n      Redirects to Google for authentication.\n      Use ?action=logout to clear session.",
+        "operationId": "Oidc_handleOidc",
+        "parameters": [
+          {
+            "name": "action",
+            "required": false,
+            "in": "query",
+            "description": "Action: logout clears session",
+            "schema": {
+              "enum": [
+                "logout"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirects to Google OAuth or logout page"
+          },
+          "404": {
+            "description": "Google OAuth is not enabled"
+          }
+        },
+        "summary": "Initiate Google OAuth flow or logout",
+        "tags": [
+          "oidc"
+        ]
+      }
+    },
+    "/api/oidc/callback": {
+      "get": {
+        "description": "\n      Handles Google OAuth callback.\n      Validates user, issues JWT, and redirects to app.",
+        "operationId": "Oidc_googleAuthCallback",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "Sets auth cookie and redirects to home or error page"
+          }
+        },
+        "summary": "Google OAuth callback",
+        "tags": [
+          "oidc"
+        ]
+      }
+    },
+    "/api/oauth/token": {
+      "post": {
+        "description": "Supports both Basic Authentication (Authorization header) and request body credentials per RFC 6749 Section 2.3.1",
+        "operationId": "OAuthToken_token",
+        "parameters": [
+          {
+            "name": "authorization",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Access token generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthTokenResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request (missing parameters or invalid grant type)"
+          },
+          "401": {
+            "description": "Invalid client credentials"
+          }
+        },
+        "summary": "OAuth 2.0 Token Endpoint (Client Credentials Flow)",
+        "tags": [
+          "oauth"
+        ]
+      }
+    },
+    "/api/me": {
+      "get": {
+        "operationId": "CurrentUser_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Current user profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get current user profile",
+        "tags": [
+          "me"
+        ]
+      },
+      "patch": {
+        "operationId": "CurrentUser_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated user profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update user profile",
+        "tags": [
+          "me"
+        ]
+      }
+    },
+    "/api/users": {
+      "get": {
+        "operationId": "User_fetch",
+        "parameters": [
+          {
+            "name": "email",
+            "required": false,
+            "in": "query",
+            "description": "Find by exact email",
+            "schema": {
+              "example": "admin@example.com",
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search term for email, first name, or last name",
+            "schema": {
+              "example": "john",
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeArchived",
+            "required": false,
+            "in": "query",
+            "description": "Include soft-deleted users",
+            "schema": {
+              "default": false,
+              "example": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Field to sort by",
+            "schema": {
+              "default": "createdAt",
+              "type": "string",
+              "enum": [
+                "id",
+                "email",
+                "firstName",
+                "lastName",
+                "createdAt",
+                "updatedAt"
+              ]
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "default": "DESC",
+              "type": "string",
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedUsersDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List users",
+        "tags": [
+          "users"
+        ]
+      },
+      "post": {
+        "operationId": "User_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already exists"
+          }
+        },
+        "summary": "Create or invite user (Admin only)",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "operationId": "User_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Get user by ID (Admin only)",
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "User_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Update user by ID",
+        "tags": [
+          "users"
+        ]
+      },
+      "delete": {
+        "operationId": "User_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted successfully"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Delete user (Admin only)",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/{id}/restore": {
+      "post": {
+        "operationId": "User_restore",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User restored successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Restore soft-deleted user (Admin only)",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/{id}/reinvite": {
+      "post": {
+        "operationId": "User_reinvite",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Invitation sent"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Reinvite user (Admin only)",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/healthcheck": {
+      "get": {
+        "operationId": "Health_healthCheck",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        },
+        "summary": "Basic health check",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/health/live": {
+      "get": {
+        "operationId": "Health_liveness",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is alive"
+          }
+        },
+        "summary": "Liveness probe",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/health/ready": {
+      "get": {
+        "operationId": "Health_readiness",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is ready"
+          },
+          "503": {
+            "description": "Service is not ready"
+          }
+        },
+        "summary": "Readiness probe",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/sentry/debug": {
+      "get": {
+        "operationId": "Health_sentryDebug",
+        "parameters": [],
+        "responses": {
+          "500": {
+            "description": "Test error thrown for Sentry"
+          }
+        },
+        "summary": "Test Sentry error capture (development only)",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/sentry/message": {
+      "get": {
+        "operationId": "Health_sentryMessage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Test message sent to Sentry"
+          }
+        },
+        "summary": "Test Sentry message capture (development only)",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/content": {
+      "get": {
+        "description": "Returns catalog entries for all published content packages (repositories). Each entry includes basic metadata like name, description, schema type, and publication timestamp. Use GET /content/:id for full repository details.",
+        "operationId": "Content_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of content packages (repositories)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CatalogEntryDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Fetch list of content packages (repositories)",
+        "tags": [
+          "content"
+        ],
+        "x-order": 1
+      }
+    },
+    "/api/content/{id}": {
+      "get": {
+        "description": "Returns the full repository structure",
+        "operationId": "Content_getPackage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Content package (repository) id",
+            "schema": {
+              "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Content package overview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepositoryDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Content package not found"
+          }
+        },
+        "summary": "Get content package entity (repository) by id",
+        "tags": [
+          "content"
+        ],
+        "x-order": 2
+      }
+    },
+    "/api/content/{id}/access": {
+      "get": {
+        "description": "Returns list of all users who have access to the repository",
+        "operationId": "Content_getRepositoryAccess",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Repository ID",
+            "schema": {
+              "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Repository access information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessWebhookPayloadDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Repository not found or access data not available"
+          }
+        },
+        "summary": "Get Tailor CMS repository access information (users and roles)",
+        "tags": [
+          "content"
+        ],
+        "x-order": 3
+      }
+    },
+    "/api/content/node/{id}": {
+      "get": {
+        "description": "Retrieves any content node by its ID using O(1) lookup. Returns the node with its full data including nested children. Supports Repository, Activity, ContentContainer, and ContentElement types. Useful for direct navigation to specific content sections.",
+        "operationId": "Content_getNode",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Content node id",
+            "schema": {
+              "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Node details (Repository, Activity, ContentContainer, or ContentElement)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RepositoryDto"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ActivityDto"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ContentContainerDto"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ContentElementDto"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Content package (repository) or node not found"
+          }
+        },
+        "summary": "Get specific content node by id",
+        "tags": [
+          "content"
+        ],
+        "x-order": 4
+      }
+    },
+    "/api/content/activities": {
+      "get": {
+        "description": "Search for activities using Garment indexed search.",
+        "operationId": "Content_filterActivities",
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "required": false,
+            "in": "query",
+            "description": "Repository ID to filter activities by",
+            "schema": {
+              "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+              "type": "string"
+            }
+          },
+          {
+            "name": "parentId",
+            "required": false,
+            "in": "query",
+            "description": "Activity parent ID to filter by (0 for root-level activities)",
+            "schema": {
+              "example": 15,
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Activity type to filter by",
+            "schema": {
+              "example": "LESSON",
+              "type": "string"
+            }
+          },
+          {
+            "name": "tags",
+            "required": false,
+            "in": "query",
+            "description": "Tag to filter activities by (from recommendation metadata)",
+            "schema": {
+              "example": "javascript",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of results to return (max 100)",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 100,
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of activities matching the filter criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ActivitySearchResultDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Filter activities across all repositories",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/content/containers": {
+      "get": {
+        "description": "Search for content containers using Garment indexed search.",
+        "operationId": "Content_filterContainers",
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "required": false,
+            "in": "query",
+            "description": "Repository ID to filter containers by",
+            "schema": {
+              "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+              "type": "string"
+            }
+          },
+          {
+            "name": "parentId",
+            "required": false,
+            "in": "query",
+            "description": "Container parent ID to filter by",
+            "schema": {
+              "example": 15,
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Container type to filter by",
+            "schema": {
+              "example": "TAKEAWAYS",
+              "type": "string"
+            }
+          },
+          {
+            "name": "tags",
+            "required": false,
+            "in": "query",
+            "description": "Tag to filter containers by (from recommendation metadata)",
+            "schema": {
+              "example": "javascript",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of results to return (max 100)",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 100,
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of content containers matching the filter criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContainerSearchResultDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Filter content containers across all repositories",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/content/goals": {
+      "get": {
+        "description": "Returns searchable problems and learning outcomes.",
+        "operationId": "Content_getLearningGoals",
+        "parameters": [
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Search query to filter learning goals",
+            "schema": {
+              "example": "responsive",
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Filter by type (problem or outcome)",
+            "schema": {
+              "example": "problem",
+              "type": "string",
+              "enum": [
+                "problem",
+                "outcome"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of results to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of learning goals",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LearningGoalsResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Get all learning goals (problems and outcomes)",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/content/analysis": {
+      "get": {
+        "description": "Returns aggregated content analysis including tag distribution, difficulty levels, category breakdown, and global profiling questions for learner assessment.",
+        "operationId": "Content_getAnalysis",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Content analysis data with profiling questions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentAnalysisDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Get content analysis and profiling questions",
+        "tags": [
+          "content"
+        ]
+      },
+      "post": {
+        "description": "Triggers re-analysis of content.",
+        "operationId": "Content_forceAnalysis",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Analysis regeneration completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForceAnalysisResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Force regeneration of content analysis",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/content/stats": {
+      "get": {
+        "description": "Returns aggregate statistics including total repositories, activities, containers, elements, and bulk storage metrics (compressed vs uncompressed sizes). Useful for admin dashboards and monitoring.",
+        "operationId": "Content_getStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Published content stats and storage metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentStatsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Get content statistics across all repositories",
+        "tags": [
+          "content"
+        ]
+      }
+    },
+    "/api/content/webhook/publish": {
+      "post": {
+        "description": "Receives publish notifications from Tailor CMS when repository or activity content is updated. Triggers content synchronization to refresh the local cache. Requires OAuth token with webhook:publish scope.",
+        "operationId": "Webhooks_handlePublishWebhook",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookPayloadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook processed successfully"
+          },
+          "401": {
+            "description": "Unauthorized - OAuth token required"
+          },
+          "403": {
+            "description": "Forbidden - Missing required scope"
+          }
+        },
+        "summary": "Webhook endpoint for TailorCMS publish events (OAuth only)",
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/api/content/webhook/access": {
+      "post": {
+        "description": "Receives access rights updates from Tailor CMS when permissions change for a repository. Updates local access indices for authorization checks. Requires OAuth token with webhook:access scope.",
+        "operationId": "Webhooks_handleAccessWebhook",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccessWebhookPayloadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Access rights updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized - OAuth token required"
+          },
+          "403": {
+            "description": "Forbidden - Missing required scope"
+          }
+        },
+        "summary": "Endpoint for Tailor CMS access rights updates (OAuth only)",
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/api/learning/interaction": {
+      "post": {
+        "description": "Processes user interaction with a content element (quiz, drag-drop, etc.) and returns updated display state with correctness feedback. Uses element-specific server-side runtimes to validate responses.",
+        "operationId": "Learning_interact",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ElementInteractDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Interaction processed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ElementInteractResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Element not found"
+          }
+        },
+        "summary": "Process learner interaction with the content element (Tailor CMS content element hook)",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/learning/activity": {
+      "post": {
+        "description": "Records a user interaction with a content node (repository, activity, container, or element). Updates the learner's 6-dimensional affinity scores (topic, skill, concept, industry, tool, goal) based on content tags and creates a visit entry for analytics. The context.entryPoint field tracks how the user discovered the content: search, recommendation, browse, pathway, continue, or direct.",
+        "operationId": "Learning_recordActivity",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordActivityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileUpdateResultDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Record content consumption activity",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/learning/onboarding": {
+      "post": {
+        "description": "Processes onboarding survey responses to create the initial learner profile. Each answer maps to tag affinities that seed the 6-dimensional profile (topic, skill, concept, industry, tool, goal). Also extracts experience level and learning goals from relevant questions.",
+        "operationId": "Learning_submitOnboarding",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitOnboardingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile initialized"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Initialize learner profile with onboarding survey",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/learning/continue": {
+      "get": {
+        "description": "Returns content the learner has started but not completed, sorted by most recent visit. Designed for \"Continue Learning\" UI sections. Use includeCompleted to also return finished items for review purposes.",
+        "operationId": "Learning_getContinueLearning",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of items to return, sorted by last visit timestamp (most recent first)",
+            "schema": {
+              "minimum": 1,
+              "maximum": 20,
+              "default": 5,
+              "example": 5,
+              "type": "number"
+            }
+          },
+          {
+            "name": "includeCompleted",
+            "required": false,
+            "in": "query",
+            "description": "Include items the learner has completed (progress=100). Disabled by default to focus on unfinished content",
+            "schema": {
+              "default": false,
+              "example": false,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContinueLearningDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Get in-progress content",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/learning/recommendations": {
+      "get": {
+        "description": "Returns content ranked by how well it matches the learner's affinity profile. By default excludes completed items and boosts recently-visited content. Use includeCompleted to show finished items, onlyInProgress to filter to started content, and boostRecent/recentBoostWeight/recentDays to control recency scoring.",
+        "operationId": "Learning_getRecommendations",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of recommendations to return, sorted by relevance score (highest first)",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "includeCompleted",
+            "required": false,
+            "in": "query",
+            "description": "Include repositories the learner has completed (progress=100). Disabled by default to focus on new learning opportunities",
+            "schema": {
+              "default": false,
+              "example": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "onlyInProgress",
+            "required": false,
+            "in": "query",
+            "description": "Only show repositories the learner has started (has visit history). Useful for \"resume learning\" focused recommendations",
+            "schema": {
+              "default": false,
+              "example": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "boostRecent",
+            "required": false,
+            "in": "query",
+            "description": "Boost relevance score for content with recent interactions. Recent activity signals active interest and learning momentum",
+            "schema": {
+              "default": true,
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "recentBoostWeight",
+            "required": false,
+            "in": "query",
+            "description": "Weight multiplier for recency boost (0-1). Higher values prioritize recent activity over pure profile match quality",
+            "schema": {
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.2,
+              "example": 0.2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "recentDays",
+            "required": false,
+            "in": "query",
+            "description": "Number of days to consider for \"recent\" interactions. Activity older than this threshold receives no recency boost",
+            "schema": {
+              "minimum": 1,
+              "default": 30,
+              "example": 30,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Get personalized content recommendations",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/learning/similar/{id}": {
+      "get": {
+        "description": "Returns content similar to a given repository based on shared tags and problems addressed. Results are ranked by overlap score. Use sectionId to match against a specific section's tags rather than the full repository. Useful for \"More Like This\" UI sections.",
+        "operationId": "Learning_getMoreLikeThis",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Repository id",
+            "schema": {
+              "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sectionId",
+            "required": false,
+            "in": "query",
+            "description": "Section (activity) id for section-level matching. When provided, recommendations are based on section tags rather than full repository",
+            "schema": {
+              "example": "b2c3d4e5-f6a7-4890-bcde-f01234567890",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of related content suggestions to return, sorted by similarity score (highest first)",
+            "schema": {
+              "minimum": 1,
+              "maximum": 20,
+              "default": 5,
+              "example": 5,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Repository not found"
+          }
+        },
+        "summary": "Find similar content",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/learning/activity/{userId}": {
+      "delete": {
+        "description": "Admin-only endpoint to clear any user's learning data. Set resetOnboarding to clear survey responses. Set resetProgress to clear visit history, affinities, and engagement metrics. If neither flag is set, resets both.",
+        "operationId": "Learning_resetUserActivity",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "Target user ID",
+            "schema": {
+              "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetActivityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetActivityResultDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Admin only"
+          }
+        },
+        "summary": "Reset user activity (admin)",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/learning/scenario/generate": {
+      "post": {
+        "description": "Uses the configured AI provider to generate text from a prompt. Used for generating client profiles from survey answers and post-conversation analysis/reflection.",
+        "operationId": "Scenario_generate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScenarioGenerateRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "AI-generated response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioGenerateResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AI provider is not configured"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Generate AI text for scenario context",
+        "tags": [
+          "scenario"
+        ]
+      }
+    },
+    "/api/learning/scenario/chat": {
+      "post": {
+        "description": "Generates AI responses based on a system prompt and conversation history. Used for role-play scenarios, Socratic tutoring, and other conversational AI interactions.",
+        "operationId": "Scenario_chat",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "AI chat response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AI provider is not configured"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Chat with AI using a system prompt and message history",
+        "tags": [
+          "scenario"
+        ]
+      }
+    },
+    "/api/learning/scenario/realtime-session": {
+      "post": {
+        "description": "Creates a short-lived client secret that allows the browser to establish a direct WebRTC connection to OpenAI's Realtime API. The session is pre-configured with the client role-play instructions.",
+        "operationId": "Scenario_realtimeSession",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RealtimeSessionRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ephemeral token for WebRTC connection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RealtimeSessionResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AI provider is not configured"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Create ephemeral token for OpenAI Realtime API",
+        "tags": [
+          "scenario"
+        ]
+      }
+    },
+    "/api/assistant/chat": {
+      "post": {
+        "description": "Answers a free-text question about the catalog, recommends content, or proposes a learning pathway. The endpoint is stateless: the client replays the whole conversation on every turn.",
+        "operationId": "CoursewareAssistant_chat",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistantChatRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Assistant reply with any resolved content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistantReplyDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AI provider is not configured"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Ask the courseware assistant",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/seed/reset": {
+      "post": {
+        "description": "Clears all data and reseeds with base admin user. Only in non prod env.",
+        "operationId": "Seed_resetDatabase",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Database reset successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeedResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - not available in production"
+          }
+        },
+        "summary": "Reset database with base seed data",
+        "tags": [
+          "seed"
+        ]
+      }
+    },
+    "/api/seed/user": {
+      "post": {
+        "description": "Creates a test user with random data",
+        "operationId": "Seed_seedUser",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Test user created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeedResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a single test user",
+        "tags": [
+          "seed"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "API",
+    "description": "API documentation",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "health",
+      "description": "Health-check endpoints"
+    },
+    {
+      "name": "auth",
+      "description": "User auth endpoints"
+    },
+    {
+      "name": "oauth",
+      "description": "OAuth endpoints for 3rd party integrations"
+    },
+    {
+      "name": "oidc",
+      "description": "OpenID Connect endpoints"
+    },
+    {
+      "name": "me",
+      "description": "Current user profile endpoints"
+    },
+    {
+      "name": "content",
+      "description": "Tailor CMS content delivery endpoints"
+    },
+    {
+      "name": "learning",
+      "description": "Onboarding, activity tracking, and recommendations"
+    },
+    {
+      "name": "scenario",
+      "description": "AI-powered role-play scenarios for learning"
+    },
+    {
+      "name": "users",
+      "description": "User management endpoints"
+    },
+    {
+      "name": "integrations",
+      "description": "Create and manage api consumers"
+    },
+    {
+      "name": "webhooks",
+      "description": "Content webhook endpoints"
+    },
+    {
+      "name": "seed",
+      "description": "Database seeding endpoints (non-production only)"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "password123",
+            "minLength": 8
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "OnboardingAnswerDto": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string",
+            "description": "Question ID",
+            "example": "q-1"
+          },
+          "selectedValues": {
+            "description": "Selected option values",
+            "example": [
+              "javascript",
+              "react"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tagAffinities": {
+            "type": "object",
+            "description": "Tag affinities for this answer",
+            "example": {
+              "javascript": 0.9,
+              "programming": 0.7
+            }
+          }
+        },
+        "required": [
+          "questionId",
+          "selectedValues",
+          "tagAffinities"
+        ]
+      },
+      "OnboardingSurveyDto": {
+        "type": "object",
+        "properties": {
+          "survey": {
+            "description": "Survey question answers",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OnboardingAnswerDto"
+            }
+          },
+          "completedAt": {
+            "type": "object",
+            "description": "When the onboarding survey was completed",
+            "example": "2025-01-15T10:30:00.000Z"
+          }
+        },
+        "required": [
+          "survey"
+        ]
+      },
+      "UserActivityDto": {
+        "type": "object",
+        "properties": {
+          "onboarding": {
+            "description": "Onboarding survey data",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OnboardingSurveyDto"
+              }
+            ]
+          },
+          "affinities": {
+            "type": "object",
+            "description": "6D affinities by dimension (topic, skill, concept, industry, tool)",
+            "example": {
+              "topic": {
+                "javascript": {
+                  "value": 0.85,
+                  "confidence": 0.6
+                }
+              },
+              "skill": {
+                "debugging": {
+                  "value": 0.7,
+                  "confidence": 0.5
+                }
+              }
+            }
+          },
+          "experienceLevel": {
+            "type": "string",
+            "description": "Learner's experience/difficulty level",
+            "example": "intermediate"
+          },
+          "goals": {
+            "description": "Learning goals",
+            "example": [
+              "learn async programming",
+              "build REST APIs"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recentTags": {
+            "description": "Recently interacted tags (most recent first)",
+            "example": [
+              "javascript",
+              "react",
+              "nodejs"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lastUpdatedAt": {
+            "type": "object",
+            "description": "When the activity data was last updated",
+            "example": "2025-01-15T10:30:00.000Z"
+          }
+        },
+        "required": [
+          "lastUpdatedAt"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "USER"
+            ]
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "object"
+          },
+          "label": {
+            "type": "string"
+          },
+          "imgUrl": {
+            "type": "string"
+          },
+          "isAdmin": {
+            "type": "boolean"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "lastLoginAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "deletedAt": {
+            "type": "object"
+          },
+          "activity": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserActivityDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "role",
+          "firstName",
+          "lastName",
+          "fullName",
+          "label",
+          "imgUrl",
+          "isAdmin",
+          "isDeleted",
+          "lastLoginAt",
+          "createdAt",
+          "updatedAt",
+          "deletedAt",
+          "activity"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          },
+          "expiresIn": {
+            "type": "number",
+            "description": "Token expiration time in milliseconds (token sent via httpOnly cookie)"
+          }
+        },
+        "required": [
+          "user",
+          "expiresIn"
+        ]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "description": "Current password",
+            "example": "OldPassword123"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "New password",
+            "minLength": 8,
+            "example": "NewSecureP@ssw0rd"
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ]
+      },
+      "ChangePasswordResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Success message"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to send reset link to",
+            "example": "user@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Password reset token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "New password",
+            "example": "NewSecureP@ssw0rd",
+            "minLength": 8
+          }
+        },
+        "required": [
+          "token",
+          "newPassword"
+        ]
+      },
+      "OAuthClientResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "ownerType": {
+            "type": "string",
+            "enum": [
+              "INTEGRATION"
+            ]
+          },
+          "allowedScopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowedGrantTypes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "client_credentials"
+              ]
+            }
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "type": "object",
+            "nullable": true
+          },
+          "lastUsedAt": {
+            "type": "object",
+            "nullable": true
+          },
+          "usageCount": {
+            "type": "number"
+          },
+          "rateLimit": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "isExpired": {
+            "type": "boolean"
+          },
+          "canAuthenticate": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "clientId",
+          "name",
+          "ownerType",
+          "allowedScopes",
+          "allowedGrantTypes",
+          "isActive",
+          "usageCount",
+          "createdAt",
+          "updatedAt",
+          "isExpired",
+          "canAuthenticate"
+        ]
+      },
+      "PaginatedOAuthClientsResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OAuthClientResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Total number of items"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of items per page"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Offset for pagination"
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "limit",
+          "offset"
+        ]
+      },
+      "CreateOAuthClientDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "OAuth client name",
+            "example": "My Integration"
+          },
+          "description": {
+            "type": "string",
+            "description": "OAuth client description",
+            "example": "API access for my automation script"
+          },
+          "scopes": {
+            "description": "Allowed scopes for this client",
+            "example": [
+              "read:users",
+              "write:content"
+            ],
+            "type": "array",
+            "items": {
+              "type": "array"
+            }
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Client expiration date",
+            "example": "2025-12-31T23:59:59Z"
+          },
+          "rateLimit": {
+            "type": "number",
+            "description": "Rate limit (requests per hour)",
+            "example": 1000,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "name",
+          "scopes"
+        ]
+      },
+      "OAuthClientWithSecretResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "ownerType": {
+            "type": "string",
+            "enum": [
+              "INTEGRATION"
+            ]
+          },
+          "allowedScopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowedGrantTypes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "client_credentials"
+              ]
+            }
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "type": "object",
+            "nullable": true
+          },
+          "lastUsedAt": {
+            "type": "object",
+            "nullable": true
+          },
+          "usageCount": {
+            "type": "number"
+          },
+          "rateLimit": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "isExpired": {
+            "type": "boolean"
+          },
+          "canAuthenticate": {
+            "type": "boolean"
+          },
+          "clientSecret": {
+            "type": "string",
+            "description": "Client secret - only shown once on creation/rotation"
+          }
+        },
+        "required": [
+          "id",
+          "clientId",
+          "name",
+          "ownerType",
+          "allowedScopes",
+          "allowedGrantTypes",
+          "isActive",
+          "usageCount",
+          "createdAt",
+          "updatedAt",
+          "isExpired",
+          "canAuthenticate",
+          "clientSecret"
+        ]
+      },
+      "TokenRequestDto": {
+        "type": "object",
+        "properties": {
+          "grant_type": {
+            "type": "string",
+            "description": "OAuth 2.0 grant type",
+            "example": "client_credentials",
+            "enum": [
+              "client_credentials"
+            ]
+          },
+          "client_id": {
+            "type": "string",
+            "description": "OAuth client ID (required if not using Basic Authentication)",
+            "example": "client_abc123"
+          },
+          "client_secret": {
+            "type": "string",
+            "description": "OAuth client secret (required if not using Basic Authentication)",
+            "example": "sk_xyz789"
+          },
+          "scope": {
+            "type": "string",
+            "description": "Requested scopes (space-separated)",
+            "example": "read:users write:content"
+          }
+        },
+        "required": [
+          "grant_type"
+        ]
+      },
+      "OAuthTokenResponseDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "OAuth 2.0 access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "token_type": {
+            "type": "string",
+            "description": "Token type",
+            "example": "Bearer",
+            "enum": [
+              "Bearer"
+            ]
+          },
+          "expires_in": {
+            "type": "number",
+            "description": "Token expiration time in seconds",
+            "example": 3600
+          },
+          "scope": {
+            "type": "string",
+            "description": "Granted scopes (space-separated)",
+            "example": "read:users write:content"
+          }
+        },
+        "required": [
+          "access_token",
+          "token_type",
+          "expires_in",
+          "scope"
+        ]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "user@example.com"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User last name",
+            "example": "Doe"
+          },
+          "imgUrl": {
+            "type": "string",
+            "description": "User avatar as data URL (base64 encoded image)",
+            "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVEiJtZZPbBtFFMZ/M7ubXdtdb1xSFyeilBapySVU8h8OoFaooFSqiihIVIpQBKci6KEg9Q6H9kovIHoCIVQJJCKE1ENFjnAgcaSGC6rEnxBwA04Tx43t2FnvDAfjkNibxgHxnWb2e/u992bee7tCa00YFsffekFY+nUzFtjW0LrvjRXrCDIAaPLlW0nHL0SsZtVoaF98mLrx3pdhOqLtYPHChahZcYYO7KvPFxvRl5XPp1sN3adWiD1ZAqD6XYK1b/dvE5IWryTt2udLFedwc1+9kLp+vbbpoDh+6TklxBeAi9TL0taeWpdmZzQDry0AcO+jQ12RyohqqoYoo8RDwJrU+qXkjWtfi8Xxt58BdQuwQs9qC/afLwCw8tnQbqYAPsgxE1S6F3EAIXux2oQFKm0ihMsOF71dHYx+f3NND68ghCu1YIoePPQN1pGRABkJ6Bus96CutRZMydTl+TvuiRW1m3n0eDl0vRPcEysqdXn+jsQPsrHMquGeXEaY4Yk4wxWcY5V/9scqOMOVUFthatyTy8QyqwZ+kDURKoMWxNKr2EeqVKcTNOajqKoBgOE28U4tdQl5p5bwCw7BWquaZSzAPlwjlithJtp3pTImSqQRrb2Z8PHGigD4RZuNX6JYj6wj7O4TFLbCO/Mn/m8R+h6rYSUb3ekokRY6f/YukArN979jcW+V/S8g0eT/N3VN3kTqWbQ428m9/8k0P/1aIhF36PccEl6EhOcAUCrXKZXXWS3XKd2vc/TRBG9O5ELC17MmWubD2nKhUKZa26Ba2+D3P+4/MNCFwg59oWVeYhkzgN/JDR8deKBoD7Y+ljEjGZ0sosXVTvbc6RHirr2reNy1OXd6pJsQ+gqjk8VWFYmHrwBzW/n+uMPFiRwHB2I7ih8ciHFxIkd/3Omk5tCDV1t+2nNu5sxxpDFNx+huNhVT3/zMDz8usXC3ddaHBj1GHj/As08fwTS7Kt1HBTmyN29vdwAw+/wbwLVOJ3uAD1wi/dUH7Qei66PfyuRj4Ik9is+hglfbkbfR3cnZm7chlUWLdwmprtCohX4HUtlOcQjLYCu+fzGJH2QRKvP3UNz8bWk1qMxjGTOMThZ3kvgLI5AzFfo379UAAAAASUVORK5CYII="
+          }
+        }
+      },
+      "PaginatedUsersDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Total number of items",
+            "example": 100
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of items per page",
+            "example": 20
+          },
+          "page": {
+            "type": "number",
+            "description": "Current page number",
+            "example": 1
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total number of pages",
+            "example": 5
+          },
+          "hasPrevious": {
+            "type": "boolean",
+            "description": "Has previous page",
+            "example": false
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "Has next page",
+            "example": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "limit",
+          "page",
+          "totalPages",
+          "hasPrevious",
+          "hasNext"
+        ]
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "user@example.com"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User last name",
+            "example": "Doe"
+          },
+          "role": {
+            "type": "string",
+            "description": "User role",
+            "enum": [
+              "ADMIN",
+              "USER"
+            ],
+            "example": "USER"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "user@example.com"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User last name",
+            "example": "Doe"
+          },
+          "imgUrl": {
+            "type": "string",
+            "description": "User avatar as data URL (base64 encoded image)",
+            "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVEiJtZZPbBtFFMZ/M7ubXdtdb1xSFyeilBapySVU8h8OoFaooFSqiihIVIpQBKci6KEg9Q6H9kovIHoCIVQJJCKE1ENFjnAgcaSGC6rEnxBwA04Tx43t2FnvDAfjkNibxgHxnWb2e/u992bee7tCa00YFsffekFY+nUzFtjW0LrvjRXrCDIAaPLlW0nHL0SsZtVoaF98mLrx3pdhOqLtYPHChahZcYYO7KvPFxvRl5XPp1sN3adWiD1ZAqD6XYK1b/dvE5IWryTt2udLFedwc1+9kLp+vbbpoDh+6TklxBeAi9TL0taeWpdmZzQDry0AcO+jQ12RyohqqoYoo8RDwJrU+qXkjWtfi8Xxt58BdQuwQs9qC/afLwCw8tnQbqYAPsgxE1S6F3EAIXux2oQFKm0ihMsOF71dHYx+f3NND68ghCu1YIoePPQN1pGRABkJ6Bus96CutRZMydTl+TvuiRW1m3n0eDl0vRPcEysqdXn+jsQPsrHMquGeXEaY4Yk4wxWcY5V/9scqOMOVUFthatyTy8QyqwZ+kDURKoMWxNKr2EeqVKcTNOajqKoBgOE28U4tdQl5p5bwCw7BWquaZSzAPlwjlithJtp3pTImSqQRrb2Z8PHGigD4RZuNX6JYj6wj7O4TFLbCO/Mn/m8R+h6rYSUb3ekokRY6f/YukArN979jcW+V/S8g0eT/N3VN3kTqWbQ428m9/8k0P/1aIhF36PccEl6EhOcAUCrXKZXXWS3XKd2vc/TRBG9O5ELC17MmWubD2nKhUKZa26Ba2+D3P+4/MNCFwg59oWVeYhkzgN/JDR8deKBoD7Y+ljEjGZ0sosXVTvbc6RHirr2reNy1OXd6pJsQ+gqjk8VWFYmHrwBzW/n+uMPFiRwHB2I7ih8ciHFxIkd/3Omk5tCDV1t+2nNu5sxxpDFNx+huNhVT3/zMDz8usXC3ddaHBj1GHj/As08fwTS7Kt1HBTmyN29vdwAw+/wbwLVOJ3uAD1wi/dUH7Qei66PfyuRj4Ik9is+hglfbkbfR3cnZm7chlUWLdwmprtCohX4HUtlOcQjLYCu+fzGJH2QRKvP3UNz8bWk1qMxjGTOMThZ3kvgLI5AzFfo379UAAAAASUVORK5CYII="
+          },
+          "role": {
+            "type": "string",
+            "description": "User role (admin only)",
+            "enum": [
+              "ADMIN",
+              "USER"
+            ],
+            "example": "USER"
+          }
+        }
+      },
+      "IntegrationResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "lastUsedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "hasActiveClients": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "isActive",
+          "createdAt",
+          "updatedAt",
+          "hasActiveClients"
+        ]
+      },
+      "PaginatedIntegrationsResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IntegrationResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Total number of items"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of items per page"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Offset for pagination"
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "limit",
+          "offset"
+        ]
+      },
+      "CreateIntegrationDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateIntegrationDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CatalogEntryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Repository ID",
+            "example": 1
+          },
+          "uid": {
+            "type": "string",
+            "description": "Repository UID",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          },
+          "schema": {
+            "type": "string",
+            "description": "Content schema identifier",
+            "example": "COURSE"
+          },
+          "name": {
+            "type": "string",
+            "description": "Repository name",
+            "example": "Introduction to Programming"
+          },
+          "description": {
+            "type": "string",
+            "description": "Repository description",
+            "example": "Learn the basics of programming"
+          },
+          "meta": {
+            "type": "object",
+            "description": "Repository metadata, defined by the content schema",
+            "example": {}
+          },
+          "publishedAt": {
+            "type": "string",
+            "description": "Publication timestamp",
+            "example": "2024-01-15T10:30:00Z"
+          },
+          "detachedAt": {
+            "type": "string",
+            "description": "Detachment timestamp",
+            "example": null
+          }
+        },
+        "required": [
+          "id",
+          "uid",
+          "schema",
+          "name",
+          "description",
+          "meta",
+          "publishedAt"
+        ]
+      },
+      "ActivitySearchResultDto": {
+        "type": "object",
+        "properties": {
+          "entity": {
+            "type": "object",
+            "description": "The activity entity",
+            "additionalProperties": true
+          },
+          "entityType": {
+            "type": "string",
+            "description": "Entity type",
+            "example": "Activity"
+          },
+          "repositoryId": {
+            "type": "string",
+            "description": "Repository ID that contains this activity",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          }
+        },
+        "required": [
+          "entity",
+          "entityType",
+          "repositoryId"
+        ]
+      },
+      "ContainerSearchResultDto": {
+        "type": "object",
+        "properties": {
+          "entity": {
+            "type": "object",
+            "description": "The content container entity",
+            "additionalProperties": true
+          },
+          "entityType": {
+            "type": "string",
+            "description": "Entity type",
+            "example": "ContentContainer"
+          },
+          "repositoryId": {
+            "type": "string",
+            "description": "Repository ID that contains this container",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          }
+        },
+        "required": [
+          "entity",
+          "entityType",
+          "repositoryId"
+        ]
+      },
+      "SectionNodeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Section ID (uid)",
+            "example": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"
+          },
+          "type": {
+            "type": "string",
+            "description": "Schema type (e.g., module, lesson, page)",
+            "example": "lesson"
+          },
+          "entity": {
+            "type": "string",
+            "description": "Entity type (e.g., Activity, Repository)",
+            "example": "Activity"
+          },
+          "name": {
+            "type": "string",
+            "description": "Section name",
+            "example": "Introduction to CSS Grid"
+          },
+          "parent": {
+            "description": "Parent section (e.g., module containing a lesson)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SectionNodeDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "entity"
+        ]
+      },
+      "LearningGoalItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the learning goal",
+            "example": "e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of learning goal",
+            "example": "problem",
+            "enum": [
+              "problem",
+              "outcome"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "description": "Title or description of the learning goal",
+            "example": "Build a responsive dashboard layout using CSS Grid"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description (for problems)",
+            "example": "Apply CSS Grid and Flexbox techniques to create a responsive..."
+          },
+          "category": {
+            "type": "string",
+            "description": "Category (problem.category or outcome.bloomLevel)",
+            "example": "web-development"
+          },
+          "difficulty": {
+            "type": "string",
+            "description": "Difficulty level (for problems)",
+            "example": "intermediate",
+            "enum": [
+              "beginner",
+              "intermediate",
+              "advanced",
+              "expert"
+            ]
+          },
+          "requiredSkills": {
+            "description": "Required skills (for problems)",
+            "example": [
+              "css",
+              "html",
+              "responsive-design"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "repositoryId": {
+            "type": "string",
+            "description": "Repository uid for navigation",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          },
+          "repositoryName": {
+            "type": "string",
+            "description": "Repository name for display",
+            "example": "Advanced CSS Techniques"
+          },
+          "sections": {
+            "description": "Resolved section nodes for navigation (all sectionIds resolved)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SectionNodeDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "title",
+          "repositoryId",
+          "repositoryName"
+        ]
+      },
+      "LearningGoalsResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "List of learning goal items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningGoalItemDto"
+            }
+          },
+          "totalProblems": {
+            "type": "number",
+            "description": "Total number of problems across all repositories",
+            "example": 45
+          },
+          "totalOutcomes": {
+            "type": "number",
+            "description": "Total number of learning outcomes across all repositories",
+            "example": 78
+          }
+        },
+        "required": [
+          "items",
+          "totalProblems",
+          "totalOutcomes"
+        ]
+      },
+      "TagDistributionDto": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "Tag name",
+            "example": "javascript"
+          },
+          "category": {
+            "type": "string",
+            "description": "Tag category",
+            "example": "topic",
+            "enum": [
+              "topic",
+              "skill",
+              "concept",
+              "industry",
+              "tool"
+            ]
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of repositories containing this tag",
+            "example": 5
+          }
+        },
+        "required": [
+          "tag",
+          "category",
+          "count"
+        ]
+      },
+      "CategoryDistributionDto": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Category name",
+            "example": "topic"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of tags in this category",
+            "example": 15
+          }
+        },
+        "required": [
+          "category",
+          "count"
+        ]
+      },
+      "DifficultyDistributionDto": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string",
+            "description": "Difficulty level",
+            "example": "intermediate"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of repositories at this difficulty level",
+            "example": 8
+          }
+        },
+        "required": [
+          "level",
+          "count"
+        ]
+      },
+      "ProfileQuestionOptionDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Option text",
+            "example": "JavaScript Fundamentals"
+          },
+          "tagAffinities": {
+            "type": "object",
+            "description": "Tag affinities for this option",
+            "example": {
+              "javascript": 0.9,
+              "programming": 0.7
+            }
+          }
+        },
+        "required": [
+          "label",
+          "tagAffinities"
+        ]
+      },
+      "ProfileQuestionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Question ID",
+            "example": "q-1"
+          },
+          "type": {
+            "type": "string",
+            "description": "Question type",
+            "example": "multiple",
+            "enum": [
+              "single",
+              "multiple"
+            ]
+          },
+          "question": {
+            "type": "string",
+            "description": "Question text",
+            "example": "What topics are you interested in learning?"
+          },
+          "category": {
+            "type": "string",
+            "description": "Question category",
+            "example": "interests"
+          },
+          "allowMultiple": {
+            "type": "boolean",
+            "description": "Whether multiple answers can be selected",
+            "example": true
+          },
+          "options": {
+            "description": "Answer options",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProfileQuestionOptionDto"
+            }
+          },
+          "weight": {
+            "type": "number",
+            "description": "Question weight in profiling (0-1)",
+            "example": 1
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "question",
+          "category",
+          "allowMultiple",
+          "options",
+          "weight"
+        ]
+      },
+      "ContentAnalysisDto": {
+        "type": "object",
+        "properties": {
+          "hasAnalysis": {
+            "type": "boolean",
+            "description": "Whether AI analysis has been generated",
+            "example": true
+          },
+          "analyzedRepositories": {
+            "type": "number",
+            "description": "Number of repositories with AI metadata",
+            "example": 15
+          },
+          "analysisRepositoryIds": {
+            "description": "Repository IDs that were included in the aggregated content analysis",
+            "example": [
+              "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+              "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+              "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "totalRepositories": {
+            "type": "number",
+            "description": "Total number of repositories",
+            "example": 20
+          },
+          "coveragePercentage": {
+            "type": "number",
+            "description": "Percentage of repositories analyzed",
+            "example": 75
+          },
+          "generatedAt": {
+            "type": "object",
+            "description": "When the analysis was last generated",
+            "example": "2024-01-15T10:30:00.000Z",
+            "nullable": true
+          },
+          "tagDistribution": {
+            "description": "Tag distribution across all content",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagDistributionDto"
+            }
+          },
+          "categoryDistribution": {
+            "description": "Category distribution",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryDistributionDto"
+            }
+          },
+          "difficultyDistribution": {
+            "description": "Difficulty level distribution",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DifficultyDistributionDto"
+            }
+          },
+          "profilingQuestions": {
+            "description": "Global profiling questions",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProfileQuestionDto"
+            }
+          }
+        },
+        "required": [
+          "hasAnalysis",
+          "analyzedRepositories",
+          "analysisRepositoryIds",
+          "totalRepositories",
+          "coveragePercentage",
+          "generatedAt",
+          "tagDistribution",
+          "categoryDistribution",
+          "difficultyDistribution",
+          "profilingQuestions"
+        ]
+      },
+      "BulkStorageDto": {
+        "type": "object",
+        "properties": {
+          "jsonSize": {
+            "type": "number",
+            "description": "Uncompressed JSON size in bytes",
+            "example": 113152
+          },
+          "compressedSize": {
+            "type": "number",
+            "description": "Compressed storage size in bytes (zstd)",
+            "example": 26956
+          },
+          "compressionRatio": {
+            "type": "string",
+            "description": "Compression ratio as percentage",
+            "example": "76.2"
+          }
+        },
+        "required": [
+          "jsonSize",
+          "compressedSize",
+          "compressionRatio"
+        ]
+      },
+      "ContentStatsDto": {
+        "type": "object",
+        "properties": {
+          "repositories": {
+            "type": "number",
+            "description": "Total number of repositories",
+            "example": 3
+          },
+          "activities": {
+            "type": "number",
+            "description": "Total number of activities across all repositories",
+            "example": 85
+          },
+          "containers": {
+            "type": "number",
+            "description": "Total number of content containers",
+            "example": 44
+          },
+          "elements": {
+            "type": "number",
+            "description": "Total number of content elements",
+            "example": 23
+          },
+          "bulk": {
+            "description": "Bulk storage metrics (null if no content)",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BulkStorageDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "repositories",
+          "activities",
+          "containers",
+          "elements"
+        ]
+      },
+      "ForceAnalysisResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the operation succeeded",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Status message",
+            "example": "Analysis completed successfully"
+          },
+          "repositoriesAnalyzed": {
+            "type": "number",
+            "description": "Number of repositories analyzed",
+            "example": 5
+          },
+          "tags": {
+            "type": "number",
+            "description": "Number of tags found",
+            "example": 42
+          },
+          "questions": {
+            "type": "number",
+            "description": "Number of profiling questions generated",
+            "example": 8
+          }
+        },
+        "required": [
+          "success",
+          "message"
+        ]
+      },
+      "ContentElementDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Element ID",
+            "example": 1
+          },
+          "uid": {
+            "type": "string",
+            "description": "Element UID",
+            "example": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f"
+          },
+          "contentId": {
+            "type": "string",
+            "description": "Content ID",
+            "example": "content-123"
+          },
+          "contentSignature": {
+            "type": "string",
+            "description": "Content signature hash, can be used to differentiate elements"
+          },
+          "type": {
+            "type": "string",
+            "description": "Element type",
+            "example": "HTML"
+          },
+          "position": {
+            "type": "number",
+            "description": "Position in parent container",
+            "example": 1
+          },
+          "refs": {
+            "type": "object",
+            "description": "Element references to other content elements",
+            "example": {}
+          },
+          "meta": {
+            "type": "object",
+            "description": "Element metadata, configurable by schema per element type",
+            "example": {}
+          },
+          "data": {
+            "type": "object",
+            "description": "Element data including assets",
+            "example": {
+              "assets": {},
+              "content": "Sample content"
+            }
+          },
+          "size": {
+            "type": "string",
+            "description": "Human-readable size",
+            "example": "2.5 KB"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "uid",
+          "contentId",
+          "contentSignature",
+          "type",
+          "position",
+          "refs",
+          "meta",
+          "data",
+          "size",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ContentContainerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Container ID",
+            "example": 1
+          },
+          "uid": {
+            "type": "string",
+            "description": "Container UID",
+            "example": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"
+          },
+          "parentId": {
+            "type": "number",
+            "description": "Parent activity ID",
+            "example": 1
+          },
+          "type": {
+            "type": "string",
+            "description": "Container type",
+            "example": "PAGE"
+          },
+          "position": {
+            "type": "number",
+            "description": "Position in parent",
+            "example": 1
+          },
+          "publishedAs": {
+            "type": "string",
+            "description": "Publication filename",
+            "example": "container.type.json"
+          },
+          "data": {
+            "type": "object",
+            "description": "Container data, defined by the container type",
+            "example": {}
+          },
+          "elements": {
+            "description": "Content elements within container",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentElementDto"
+            }
+          },
+          "containers": {
+            "description": "Nested containers (e.g. sections within a page)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentContainerDto"
+            }
+          },
+          "size": {
+            "type": "string",
+            "description": "Human-readable size",
+            "example": "15.2 KB"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "uid",
+          "parentId",
+          "type",
+          "position",
+          "publishedAs",
+          "data",
+          "elements",
+          "containers",
+          "size",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ActivityDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Activity ID",
+            "example": 1
+          },
+          "uid": {
+            "type": "string",
+            "description": "Activity UID",
+            "example": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"
+          },
+          "parentId": {
+            "type": "number",
+            "description": "Parent activity ID",
+            "example": 0
+          },
+          "type": {
+            "type": "string",
+            "description": "Activity type",
+            "example": "MODULE"
+          },
+          "position": {
+            "type": "number",
+            "description": "Position in repository (within parent or repository root)",
+            "example": 1
+          },
+          "relationships": {
+            "type": "object",
+            "description": "Activity relationships, defined by the repository schema",
+            "example": {}
+          },
+          "meta": {
+            "type": "object",
+            "description": "Activity metadata, configurable by schema per activity type",
+            "example": {}
+          },
+          "contentContainers": {
+            "description": "Content containers within activity, e.g. pages",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentContainerDto"
+            }
+          },
+          "size": {
+            "type": "string",
+            "description": "Human-readable size",
+            "example": "150 KB"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last update timestamp"
+          },
+          "publishedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Publication timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "uid",
+          "parentId",
+          "type",
+          "position",
+          "relationships",
+          "meta",
+          "contentContainers",
+          "size",
+          "createdAt",
+          "updatedAt",
+          "publishedAt"
+        ]
+      },
+      "RepositoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Repository id",
+            "example": 1
+          },
+          "uid": {
+            "type": "string",
+            "description": "Repository uid",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          },
+          "schema": {
+            "type": "string",
+            "description": "Content schema identifier",
+            "example": "COURSE"
+          },
+          "version": {
+            "type": "string",
+            "description": "Schema version",
+            "example": "1.0.0"
+          },
+          "name": {
+            "type": "string",
+            "description": "Repository name",
+            "example": "Introduction to Programming"
+          },
+          "description": {
+            "type": "string",
+            "description": "Repository description",
+            "example": "Learn the basics of programming"
+          },
+          "meta": {
+            "type": "object",
+            "description": "Repository metadata, defined by the content schema",
+            "example": {}
+          },
+          "structure": {
+            "description": "Repository structure (activities/modules)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActivityDto"
+            }
+          },
+          "size": {
+            "type": "string",
+            "description": "Human-readable total size",
+            "example": "2.5 MB"
+          },
+          "publishedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Publication timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "uid",
+          "schema",
+          "version",
+          "name",
+          "description",
+          "meta",
+          "structure",
+          "size",
+          "publishedAt"
+        ]
+      },
+      "AccessUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "firstName": {
+            "type": "object",
+            "example": "John",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "object",
+            "example": "Doe",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "example": "ADMIN"
+          },
+          "assignedAt": {
+            "type": "string",
+            "example": "2024-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "firstName",
+          "lastName",
+          "role",
+          "assignedAt"
+        ]
+      },
+      "AccessGroupMemberDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 2
+          },
+          "email": {
+            "type": "string",
+            "example": "member@example.com"
+          },
+          "firstName": {
+            "type": "object",
+            "example": "Jane",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "object",
+            "example": "Smith",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "example": "MEMBER"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "firstName",
+          "lastName",
+          "role"
+        ]
+      },
+      "AccessGroupDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Content Team"
+          },
+          "logoUrl": {
+            "type": "object",
+            "example": "https://example.com/logo.png",
+            "nullable": true
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccessGroupMemberDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "logoUrl",
+          "members"
+        ]
+      },
+      "AccessWebhookPayloadDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 456
+          },
+          "uid": {
+            "type": "string",
+            "example": "repo_abc123"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccessUserDto"
+            }
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccessGroupDto"
+            }
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2024-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "uid",
+          "users",
+          "groups",
+          "updatedAt"
+        ]
+      },
+      "WebhookPayloadDto": {
+        "type": "object",
+        "properties": {
+          "repositoryId": {
+            "type": "number",
+            "description": "Repository ID",
+            "example": 456
+          },
+          "activityId": {
+            "type": "number",
+            "description": "Activity ID (present when activity is published)",
+            "example": 123
+          }
+        },
+        "required": [
+          "repositoryId"
+        ]
+      },
+      "ElementInteractDto": {
+        "type": "object",
+        "properties": {
+          "elementUid": {
+            "type": "string",
+            "description": "Element UID to interact with",
+            "example": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f"
+          },
+          "data": {
+            "type": "object",
+            "description": "Interaction data (e.g., user response)",
+            "example": {
+              "response": "User answer here"
+            }
+          }
+        },
+        "required": [
+          "elementUid",
+          "data"
+        ]
+      },
+      "ElementInteractResponseDto": {
+        "type": "object",
+        "properties": {
+          "isCorrect": {
+            "type": "boolean",
+            "description": "Whether the response is correct",
+            "example": true
+          },
+          "response": {
+            "type": "string",
+            "description": "User response"
+          },
+          "isSubmitted": {
+            "type": "boolean",
+            "description": "Whether the element has been submitted",
+            "example": true
+          }
+        }
+      },
+      "VisitContextDto": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "Client-generated session ID. Groups visits in the same browsing session",
+            "example": "c3d4e5f6-a7b8-4901-cdef-012345678901"
+          },
+          "sequenceNumber": {
+            "type": "number",
+            "description": "Visit order within session (1, 2, 3...). Tracks navigation",
+            "example": 3
+          },
+          "entryPoint": {
+            "type": "string",
+            "description": "How user arrived at the content",
+            "example": "recommendation",
+            "enum": [
+              "recommendation",
+              "search",
+              "browse",
+              "direct",
+              "pathway",
+              "continue"
+            ]
+          },
+          "referrer": {
+            "type": "string",
+            "description": "Previous page URL or content ID that led here",
+            "example": "https://app.example.com/search?q=investing"
+          },
+          "learningPathId": {
+            "type": "string",
+            "description": "Learning path ID if user is following a structured path",
+            "example": "path-retirement-101"
+          }
+        }
+      },
+      "ContentProgressEntryDto": {
+        "type": "object",
+        "properties": {
+          "elementId": {
+            "type": "string",
+            "description": "Unique content element identifier",
+            "example": "e5f6a7b8-c9d0-4123-ef01-234567890abc"
+          },
+          "type": {
+            "type": "string",
+            "description": "Content element type from Tailor CMS (MUX_VIDEO, PDF, etc.)",
+            "example": "MUX_VIDEO"
+          },
+          "percent": {
+            "type": "number",
+            "description": "Progress percentage (0-100). Used for video, audio, PDF",
+            "example": 75
+          },
+          "data": {
+            "type": "object",
+            "description": "Type-specific data. For quizzes: { attempts, correct, score }",
+            "example": {
+              "attempts": 2,
+              "correct": true,
+              "score": 100,
+              "selected": [
+                "0",
+                "2"
+              ]
+            }
+          }
+        },
+        "required": [
+          "elementId",
+          "type"
+        ]
+      },
+      "VisitEngagementDto": {
+        "type": "object",
+        "properties": {
+          "scrollDepth": {
+            "type": "number",
+            "description": "How far user scrolled (0-100%). Max value during visit",
+            "example": 85
+          },
+          "interactionCount": {
+            "type": "number",
+            "description": "Number of interactions (clicks, expands) during the visit",
+            "example": 12
+          },
+          "contentProgress": {
+            "description": "Per-element progress tracking. Each entry includes elementId, type, and progress data (percent for media, data for quizzes)",
+            "example": [
+              {
+                "elementId": "text-1",
+                "type": "TIPTAP_HTML",
+                "percent": 100
+              },
+              {
+                "elementId": "video-1",
+                "type": "MUX_VIDEO",
+                "percent": 75
+              },
+              {
+                "elementId": "quiz-1",
+                "type": "SINGLE_CHOICE",
+                "percent": 100,
+                "data": {
+                  "attempts": 1,
+                  "correct": true
+                }
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentProgressEntryDto"
+            }
+          }
+        }
+      },
+      "DeviceInfoDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Device type",
+            "enum": [
+              "desktop",
+              "tablet",
+              "mobile"
+            ],
+            "example": "desktop"
+          },
+          "browser": {
+            "type": "string",
+            "description": "Browser name",
+            "example": "Chrome"
+          },
+          "os": {
+            "type": "string",
+            "description": "Operating system",
+            "example": "macOS"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "RecordActivityDto": {
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "description": "Content node id. Can be repository, activity, container, or element",
+            "example": "ae27f684-9cb9-40da-a10f-9d0b1c33d742"
+          },
+          "action": {
+            "type": "string",
+            "description": "Action: view (started), complete (finished), bookmark (saved), skip (passed)",
+            "enum": [
+              "view",
+              "complete",
+              "bookmark",
+              "skip"
+            ],
+            "example": "complete"
+          },
+          "duration": {
+            "type": "number",
+            "description": "Time spent in milliseconds. Auto-calculated from visit start if not provided",
+            "example": 300000
+          },
+          "context": {
+            "description": "Navigation context: session, entry point, referrer",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VisitContextDto"
+              }
+            ]
+          },
+          "engagement": {
+            "description": "Engagement signals: scroll depth, interactions, progress",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VisitEngagementDto"
+              }
+            ]
+          },
+          "device": {
+            "description": "Device information: type, browser, OS",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeviceInfoDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "nodeId",
+          "action"
+        ]
+      },
+      "ProfileUpdateResultDto": {
+        "type": "object",
+        "properties": {
+          "updated": {
+            "type": "boolean",
+            "description": "Whether the profile was updated",
+            "example": true
+          },
+          "changesCount": {
+            "type": "number",
+            "description": "Number of tag affinities that changed",
+            "example": 5
+          },
+          "topChanges": {
+            "description": "Top interest updates from this activity",
+            "example": [
+              {
+                "tag": "retirement-plans",
+                "oldValue": 0.8,
+                "newValue": 0.85,
+                "delta": 0.05,
+                "source": "interaction"
+              }
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "updated",
+          "changesCount",
+          "topChanges"
+        ]
+      },
+      "SubmitOnboardingDto": {
+        "type": "object",
+        "properties": {
+          "answers": {
+            "type": "object",
+            "description": "Map of questionId to selected answer indexes (0-based). ProfileBuilder.build() uses these to compute affinities",
+            "example": {
+              "interests": [
+                0,
+                2
+              ],
+              "experience": [
+                1
+              ],
+              "goals": [
+                0
+              ]
+            }
+          }
+        },
+        "required": [
+          "answers"
+        ]
+      },
+      "ContinueLearningItemDto": {
+        "type": "object",
+        "properties": {
+          "repositoryId": {
+            "type": "string",
+            "description": "Parent repository identifier",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          },
+          "nodeId": {
+            "type": "string",
+            "description": "Most recent content node visited within this repository. This is the suggested resume point for the learner",
+            "example": "b2c3d4e5-f6a7-4890-bcde-f01234567890"
+          },
+          "title": {
+            "type": "string",
+            "description": "Content title",
+            "example": "Understanding Asset Allocation"
+          },
+          "thumbnail": {
+            "type": "string",
+            "description": "Thumbnail image URL",
+            "example": "https://cdn.example.com/thumbnails/asset-allocation.jpg"
+          },
+          "nodeType": {
+            "type": "string",
+            "description": "Content node type",
+            "example": "activity",
+            "enum": [
+              "repository",
+              "activity",
+              "container",
+              "element"
+            ]
+          },
+          "lastAction": {
+            "type": "string",
+            "description": "Last action: view=visited, complete=finished, bookmark=saved, skip=intentionally skipped",
+            "example": "view",
+            "enum": [
+              "view",
+              "complete",
+              "bookmark",
+              "skip"
+            ]
+          },
+          "lastVisitedAt": {
+            "type": "string",
+            "description": "ISO 8601 timestamp of the most recent visit to this content",
+            "example": "2025-01-15T10:30:00.000Z"
+          },
+          "totalTimeSpent": {
+            "type": "number",
+            "description": "Total time spent across all visits in milliseconds (720000 = 12 min)",
+            "example": 720000
+          },
+          "progress": {
+            "type": "number",
+            "description": "Progress percentage (0-100). 100 indicates completion; otherwise reflects max scroll depth or element completion percentage",
+            "example": 65,
+            "minimum": 0,
+            "maximum": 100
+          },
+          "difficulty": {
+            "type": "string",
+            "description": "Content difficulty level",
+            "example": "intermediate",
+            "enum": [
+              "beginner",
+              "intermediate",
+              "advanced",
+              "expert"
+            ]
+          },
+          "tags": {
+            "description": "Content tags captured at time of visit",
+            "example": [
+              "asset-allocation",
+              "portfolio",
+              "diversification"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "repositoryId",
+          "nodeId",
+          "title",
+          "nodeType",
+          "lastAction",
+          "lastVisitedAt",
+          "totalTimeSpent",
+          "progress",
+          "difficulty",
+          "tags"
+        ]
+      },
+      "ContinueLearningDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Ordered list of content to continue, sorted by most recently visited first",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContinueLearningItemDto"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of items returned. May be less than requested limit if learner has fewer in-progress items",
+            "example": 2
+          },
+          "generatedAt": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when this response was generated",
+            "example": "2025-01-15T10:30:00.000Z"
+          }
+        },
+        "required": [
+          "items",
+          "count",
+          "generatedAt"
+        ]
+      },
+      "RepositoryMatchDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique repository identifier",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          },
+          "name": {
+            "type": "string",
+            "description": "Repository display name",
+            "example": "Advanced Portfolio Management"
+          },
+          "score": {
+            "type": "number",
+            "description": "Similarity/relevance score (0-100). Higher scores indicate stronger semantic relationship. Typical range for good matches: 50-95",
+            "example": 78,
+            "minimum": 0,
+            "maximum": 100
+          },
+          "reason": {
+            "type": "string",
+            "description": "Human-readable explanation of why this content is related. Generated based on relationship type and shared attributes",
+            "example": "Builds on the concepts introduced in this content"
+          },
+          "relationship": {
+            "type": "string",
+            "description": "Semantic relationship type between source and target content",
+            "example": "builds-on",
+            "enum": [
+              "prerequisite",
+              "next-level",
+              "similar-topic",
+              "alternative-approach",
+              "complement",
+              "builds-on",
+              "similar-problems",
+              "alternative"
+            ]
+          },
+          "sharedTags": {
+            "description": "Tag names shared between source and target repositories, indicating topical overlap",
+            "example": [
+              "portfolio",
+              "investment-strategy",
+              "asset-allocation"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sharedProblems": {
+            "description": "Problem IDs that both repositories address, indicating similar practical applications",
+            "example": [
+              "portfolio-rebalancing",
+              "risk-assessment"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sectionId": {
+            "type": "string",
+            "description": "Best matching section (activity) id in the target repository. Useful for deep-linking to the most relevant content section",
+            "example": "b2c3d4e5-f6a7-4890-bcde-f01234567890"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "score",
+          "reason",
+          "relationship",
+          "sharedTags",
+          "sharedProblems"
+        ]
+      },
+      "RecommendationsDto": {
+        "type": "object",
+        "properties": {
+          "recommendations": {
+            "description": "Ordered list of recommended content, sorted by relevance score (highest first)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepositoryMatchDto"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of recommendations returned. May be less than requested limit if fewer matches meet the minimum score threshold",
+            "example": 10
+          },
+          "totalRepositories": {
+            "type": "number",
+            "description": "Total repositories analyzed during recommendation generation. Useful for understanding content catalog coverage",
+            "example": 45
+          },
+          "generatedAt": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when recommendations were generated",
+            "example": "2025-01-15T10:30:00.000Z"
+          }
+        },
+        "required": [
+          "recommendations",
+          "count",
+          "totalRepositories",
+          "generatedAt"
+        ]
+      },
+      "ResetActivityDto": {
+        "type": "object",
+        "properties": {
+          "resetOnboarding": {
+            "type": "boolean",
+            "description": "Reset onboarding data (survey answers, completion status)",
+            "example": true
+          },
+          "resetProgress": {
+            "type": "boolean",
+            "description": "Reset progress data (visit history, engagement, affinities, experience level)",
+            "example": true
+          }
+        }
+      },
+      "ResetActivityResultDto": {
+        "type": "object",
+        "properties": {
+          "onboardingReset": {
+            "type": "boolean",
+            "description": "Whether onboarding data was reset",
+            "example": true
+          },
+          "progressReset": {
+            "type": "boolean",
+            "description": "Whether progress data was reset",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Message describing what was reset",
+            "example": "Reset onboarding and progress data"
+          }
+        },
+        "required": [
+          "onboardingReset",
+          "progressReset",
+          "message"
+        ]
+      },
+      "ScenarioGenerateRequestDto": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "The prompt to send to the AI",
+            "example": "Generate a client profile for a retirement planning scenario"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      },
+      "ScenarioGenerateResponseDto": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string",
+            "description": "Generated text response from AI"
+          }
+        },
+        "required": [
+          "response"
+        ]
+      },
+      "MessageDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "Role of the message sender",
+            "enum": [
+              "user",
+              "assistant"
+            ],
+            "example": "user"
+          },
+          "content": {
+            "type": "string",
+            "description": "Content of the message",
+            "example": "Hello, I need help with my retirement planning."
+          }
+        },
+        "required": [
+          "role",
+          "content"
+        ]
+      },
+      "ChatRequestDto": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "System prompt defining the AI role",
+            "example": "You are a Socratic tutor..."
+          },
+          "messages": {
+            "description": "Conversation history",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageDto"
+            }
+          }
+        },
+        "required": [
+          "prompt",
+          "messages"
+        ]
+      },
+      "ChatResponseDto": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string",
+            "description": "AI response"
+          }
+        },
+        "required": [
+          "response"
+        ]
+      },
+      "RealtimeSessionRequestDto": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "System prompt/instructions for the Realtime session",
+            "example": "You are a helpful assistant..."
+          },
+          "voice": {
+            "type": "string",
+            "description": "TTS voice for audio output",
+            "example": "shimmer"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      },
+      "RealtimeSessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Ephemeral client secret for WebRTC connection"
+          },
+          "expiresAt": {
+            "type": "number",
+            "description": "Token expiration as Unix timestamp",
+            "example": 1711234567
+          }
+        },
+        "required": [
+          "token",
+          "expiresAt"
+        ]
+      },
+      "AssistantMessageDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "Who produced this turn",
+            "enum": [
+              "user",
+              "assistant"
+            ],
+            "example": "user"
+          },
+          "text": {
+            "type": "string",
+            "description": "Plain-text content of the turn",
+            "example": "Build me a pathway for retirement income planning"
+          }
+        },
+        "required": [
+          "role",
+          "text"
+        ]
+      },
+      "AssistantChatRequestDto": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "description": "Full conversation so far, oldest first, including the new user turn as the last entry. The endpoint is stateless; the client owns history.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssistantMessageDto"
+            }
+          }
+        },
+        "required": [
+          "messages"
+        ]
+      },
+      "AssistantCatalogItemDto": {
+        "type": "object",
+        "properties": {
+          "uid": {
+            "type": "string",
+            "description": "Repository or activity uid, resolvable via /content/node",
+            "example": "36da35e9-0f81-4a97-868c-44f21286ce60"
+          },
+          "type": {
+            "type": "string",
+            "description": "Catalog entity kind, used by the client to build the link",
+            "enum": [
+              "COURSE",
+              "LESSON",
+              "PRACTICE"
+            ],
+            "example": "LESSON"
+          },
+          "title": {
+            "type": "string",
+            "description": "Display title",
+            "example": "Building Emotional Trust"
+          },
+          "duration": {
+            "type": "number",
+            "description": "Estimated duration in minutes",
+            "example": 15
+          },
+          "thumbnail": {
+            "type": "string",
+            "description": "Thumbnail URL when the content has one"
+          },
+          "repositoryUid": {
+            "type": "string",
+            "description": "uid of the owning repository"
+          },
+          "repositoryName": {
+            "type": "string",
+            "description": "Name of the owning repository"
+          }
+        },
+        "required": [
+          "uid",
+          "type",
+          "title",
+          "duration",
+          "repositoryUid",
+          "repositoryName"
+        ]
+      },
+      "AssistantPathwayStepDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Why this step comes here",
+            "example": "First, get the account landscape straight."
+          },
+          "description": {
+            "type": "string",
+            "description": "What the learner takes away from this step"
+          },
+          "item": {
+            "description": "The catalog entity this step points at",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AssistantCatalogItemDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "item"
+        ]
+      },
+      "AssistantPathwayDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Pathway title"
+          },
+          "note": {
+            "type": "string",
+            "description": "Short note on pacing or assumptions, shown under the title"
+          },
+          "description": {
+            "type": "string",
+            "description": "What the pathway gets the learner to"
+          },
+          "steps": {
+            "description": "Ordered steps, each pointing at real catalog content",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssistantPathwayStepDto"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "note",
+          "description",
+          "steps"
+        ]
+      },
+      "AssistantReplyDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Assistant reply, always present"
+          },
+          "questions": {
+            "description": "Clarifying questions, when the assistant needs more to go on",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "items": {
+            "description": "Courseware content matching the request",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssistantCatalogItemDto"
+            }
+          },
+          "pathway": {
+            "description": "A proposed pathway the learner can save",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AssistantPathwayDto"
+              }
+            ]
+          },
+          "suggestions": {
+            "description": "Follow-up prompts offered as chips",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "SeedResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Result message"
+          },
+          "data": {
+            "type": "object",
+            "description": "Response data"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      }
+    }
+  }
+}

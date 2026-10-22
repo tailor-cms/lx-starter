@@ -1,0 +1,29 @@
+# TODO: Make all env variables configurable
+services:
+  postgres:
+    container_name: "lx-postgres"
+    image: "postgres:15.1"
+    environment:
+      POSTGRES_DB: "lx"
+      POSTGRES_USER: "dev"
+      POSTGRES_PASSWORD: "dev"
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    restart: "no"
+  redis:
+    container_name: "lx-redis"
+    image: redis:7.4.0
+    ports:
+      - "6379:6379"
+  localstack:
+    container_name: "lx-localstack"
+    image: localstack/localstack:latest
+    expose:
+      - '4566'
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3:4566
+      - BUCKET_NAME=test

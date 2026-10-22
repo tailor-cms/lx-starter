@@ -1,0 +1,59 @@
+name: Setup E2E testing
+runs:
+  using: composite
+  steps:
+  - uses: pnpm/action-setup@v4
+  - uses: actions/setup-node@v4
+    with:
+      node-version: 26.5.0
+      cache: 'pnpm'
+      cache-dependency-path: './pnpm-lock.yaml'
+  - name: Install dependencies
+    shell: bash
+    run: pnpm i
+  - uses: actions/cache@v3
+    name: Check Playwright cache
+    id: playwright-cache
+    with:
+      path: ~/.cache/ms-playwright
+      key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+  - name: Install Playwright
+    shell: bash
+    run: pnpm dlx playwright@${{ env.PLAYWRIGHT_VERSION }} install --with-deps
+    if: steps.playwright-cache.outputs.cache-hit != 'true'
+  - name: Run service deps via Docker
+    uses: hoverkraft-tech/compose-action@v2.0.1
+    with:
+      compose-file: docker-compose.dev.yaml
+  - name: Update .env.dev config
+    shell: bash
+    run: |
+      echo "REVERSE_PROXY_PORT=3000" >> .env.dev
+      echo "GARMENT_ENDPOINT=http://localhost:4566" >> .env.dev
+  - name: Configure env and build
+    shell: bash
+    run: pnpm setup:dev --ci
+  - name: Wait for LocalStack and create S3 bucket
+    shell: bash
+    env:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+    run: |
+      echo "Waiting for LocalStack to be ready..."
+      health_check='until curl -s http://localhost:4566/_localstack/health'
+      health_check+=' | grep -q "\"s3\": \"available\""; do sleep 1; done'
+      timeout 30 bash -c "$health_check" || echo "Health check timeout"
+      echo "Creating S3 bucket..."
+      endpoint="--endpoint-url=http://localhost:4566"
+      aws $endpoint s3 mb s3://test --region us-east-1 || echo "Failed"
+      aws $endpoint s3 ls
+  - name: Reset DB
+    shell: bash
+    run: pnpm db:reset
+  - name: Seed DB
+    shell: bash
+    run: pnpm seed
+  - name: Run
+    shell: bash
+    run: pnpm start:ci & sleep 15

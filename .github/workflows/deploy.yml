@@ -1,0 +1,41 @@
+name: Publish Docker image, provision infra and deploy
+on:
+  push:
+    branches: [demo/cg, demo/vang]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 26.5.0
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.17.1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-region: us-east-1
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: pnpm i
+      - name: Add SHORT_SHA env variable
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-7`" >> $GITHUB_ENV
+      - name: Provision infra and deploy
+        uses: pulumi/actions@v3
+        with:
+          command: up
+          stack-name: extensionengine/lx/prod
+          work-dir: infrastructure
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

@@ -1,0 +1,3 @@
+name: lx
+description: Infrastructure as Code for LX - Learning experience platform powered by Tailor CMS
+runtime: nodejs

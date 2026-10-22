@@ -1,0 +1,55 @@
+import { packageDirectory } from 'pkg-dir';
+import shell from 'shelljs';
+import { createDatabase, getDatabaseClient } from './database.js';
+import generateConfig from './dotenv.js';
+
+const log = (msg) => console.log(` ${msg}`);
+const PROJECT_DIR = await packageDirectory();
+
+// DB helpers
+const getDBName = (name, prefix) => (prefix ? `${prefix}_${name}` : name);
+const initDatabase = async () => {
+  await shell.exec('pnpm db:migrate');
+  await shell.exec('pnpm seed');
+};
+
+const setAppEnv = (opts) => ({
+  path: PROJECT_DIR,
+  beforeHook: async () => {
+    const isCreated = await createDatabase(opts.client, opts.dbName);
+    const env = {
+      DATABASE_NAME: opts.dbName,
+      DATABASE_USER: opts.user,
+      DATABASE_PASSWORD: opts.password,
+    };
+    return {
+      env,
+      afterHook: isCreated ? initDatabase : null,
+    };
+  },
+});
+
+export default async function ({ dbPrefix }) {
+  try {
+    const dbConfig = await getDatabaseClient();
+    const configs = [
+      setAppEnv({ ...dbConfig, dbName: getDBName('lx', dbPrefix) }),
+    ];
+    const afterHooks = [];
+    await Promise.all(
+      configs.map(async ({ path, beforeHook }) => {
+        const beforeHookResponse = beforeHook ? await beforeHook() : {};
+        const config = beforeHookResponse.env || {};
+        await generateConfig(path, config);
+        if (beforeHookResponse.afterHook) {
+          afterHooks.push(beforeHookResponse.afterHook);
+        }
+      }),
+    );
+    return afterHooks;
+  } catch (err) {
+    log('🚨 Unable to configure .env!');
+    log(err);
+    shell.exit(1);
+  }
+}

@@ -1,0 +1,112 @@
+import { expect, test } from '@playwright/test';
+import { faker } from '@faker-js/faker';
+
+import { ForgotPassword, ResetPassword, SignIn } from '../../../pom/auth';
+import ApiClient from '../../../api/ApiClient';
+import { AppBar } from '../../../pom/common/AppBar';
+import { TEST_USER as DEFAULT_USER } from '../../../fixtures/auth';
+
+const {
+  OIDC_TEST_USER_EMAIL: _OIDC_TEST_USER_EMAIL,
+  OIDC_TEST_USER_PASSWORD: _OIDC_TEST_USER_PASSWORD,
+} = process.env;
+
+interface UserData {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  role: string;
+  password?: string;
+}
+
+const getMockUserData = (): UserData => ({
+  email: faker.internet.email({ provider: 'example.com' }),
+  firstName: faker.person.firstName(),
+  lastName: faker.person.lastName(),
+  role: 'ADMIN',
+});
+
+const userAPI = new ApiClient('/api/users');
+
+const createUser = async (page): Promise<UserData> => {
+  const initialLocation = page.url();
+  const userData = getMockUserData();
+  await userAPI.create(userData as any);
+  const resetPasswordPage = new ResetPassword(page);
+  const inviteLink = await resetPasswordPage.fetchInviteLink(userData.email);
+  await page.goto(inviteLink);
+  await page.waitForLoadState('networkidle');
+  const password = 'Test1234!';
+  await resetPasswordPage.resetPassword(password);
+  await page.goto(initialLocation);
+  return { ...userData, password };
+};
+
+test.beforeEach(async ({ page }) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+});
+
+test('sign in page has a title set', async ({ page }) => {
+  const signIn = new SignIn(page);
+  await signIn.visit();
+  await expect(page).toHaveTitle(/Sign in/);
+});
+
+test('should be able to sign in', async ({ page }) => {
+  const signInPage = new SignIn(page);
+  await signInPage.visit();
+  await signInPage.signIn(DEFAULT_USER.email, DEFAULT_USER.password);
+  await expect(page).toHaveTitle('Home');
+});
+
+test('should be able to sign out', async ({ page }) => {
+  const signInPage = new SignIn(page);
+  await signInPage.visit();
+  await signInPage.signIn(DEFAULT_USER.email, DEFAULT_USER.password);
+  await expect(page).toHaveTitle('Home');
+  const appBar = new AppBar(page);
+  await appBar.logout();
+  await expect(page).toHaveTitle(/Sign in/);
+});
+
+test('sign in should fail in case of wrong credentials', async ({ page }) => {
+  const signInPage = new SignIn(page);
+  await signInPage.visit();
+  await signInPage.fillEmail(DEFAULT_USER.email);
+  await signInPage.fillPassword('WrongPassword123!');
+  await signInPage.submitBtn.click();
+  await expect(
+    page.getByText('The email or password you entered is incorrect.'),
+  ).toBeVisible();
+});
+
+test('should be able to accept invite and sign in', async ({ page }) => {
+  const signInPage = new SignIn(page);
+  // Invite user and set the password
+  const user = await createUser(page);
+  await signInPage.visit();
+  await signInPage.signIn(user.email, user.password);
+});
+
+test('should be able to reset password', async ({ page }) => {
+  // Create new user
+  const signInPage = new SignIn(page);
+  await signInPage.visit();
+  const user = await createUser(page);
+  // Navigate to forgot password page from the sign in page
+  await signInPage.forgotPasswordLink.click();
+  await expect(page).toHaveTitle('Request password reset');
+  const forgotPasswordPage = new ForgotPassword(page);
+  await forgotPasswordPage.requestPasswordReset(user.email);
+  // Fetch reset link from email
+  const resetLink = await forgotPasswordPage.fetchResetLink(user.email);
+  await page.goto(resetLink);
+  await page.waitForLoadState('networkidle');
+  // Set new password
+  const resetPasswordPage = new ResetPassword(page);
+  const newPassword = 'Test1234!';
+  await resetPasswordPage.resetPassword(newPassword);
+  await signInPage.signIn(user.email, newPassword);
+  await expect(page).toHaveTitle('Home');
+});

@@ -1,0 +1,10 @@
+// Vuetify card shadow override
+.v-card--variant-elevated, .v-expansion-panel__shadow, .v-toolbar {
+  box-shadow: 0px 2px 4px 0px #00000014 !important;
+}
+
+// Remove opacity from list icons
+.v-list-item__prepend > .v-icon,
+.v-list-item__append > .v-icon {
+  opacity: 1 !important;
+}

@@ -1,0 +1,58 @@
+{
+  "name": "lx-starter",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "node ./scripts/boot.js",
+    "dc": "docker compose -f docker-compose.dev.yaml up & pnpm dev",
+    "build": "dotenv -- pnpm -r build",
+    "start": "cd ./apps/backend && pnpm start:prod",
+    "start:ci": "cd ./apps/backend && pnpm start:ci",
+    "dcs": "docker compose -f docker-compose.dev.yaml up & pnpm start",
+    "lint": "eslint .",
+    "openapi:generate": "cd apps/backend && pnpm build && pnpm openapi:generate",
+    "api:client:build": "node ./packages/api-client-generator/bin/build-client.js",
+    "api:client:watch": "node ./packages/api-client-generator/bin/watch-client.js",
+    "e2e:functional": "cd tests && pnpm e2e:functional",
+    "e2e:visual": "cd tests && pnpm e2e:visual",
+    "e2e:a11y": "cd tests && pnpm e2e:a11y",
+    "setup:dev": "pnpm i && node ./scripts/setup/index.js",
+    "db:reset": "cd ./apps/backend && pnpm schema:fresh",
+    "db:migrate": "cd ./apps/backend && pnpm db migrate",
+    "seed": "cd ./apps/backend && pnpm seeder:run",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "@app/seed": "workspace:^",
+    "@nuxt/eslint-config": "^1.9.0",
+    "boxen": "^8.0.1",
+    "chalk": "^5.6.2",
+    "dotenv-cli": "^10.0.0",
+    "eslint": "^9.38.0",
+    "execa": "^9.6.0",
+    "inquirer": "^12.10.0",
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.8",
+    "ora": "^9.0.0",
+    "pg": "^8.16.3",
+    "pid-port": "^2.0.0",
+    "pkg-dir": "^9.0.0",
+    "prettier": "^3.6.2",
+    "shelljs": "^0.10.0",
+    "typescript": "^5.9.3",
+    "vitepress": "^1.6.4"
+  },
+  "dependencies": {
+    "@inquirer/select": "^4.4.0",
+    "concurrently": "^9.2.1",
+    "dotenv": "^17.2.3",
+    "fkill": "^9.0.0"
+  },
+  "engines": {
+    "node": ">=26"
+  },
+  "packageManager": "pnpm@10.19.0"
+}

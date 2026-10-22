@@ -1,0 +1,36 @@
+{
+  "name": "@app/vue-components",
+  "description": "Reusable Vue components",
+  "license": "MIT",
+  "version": "1.0.8",
+  "files": [
+    "src"
+  ],
+  "type": "module",
+  "main": "./src/index.ts",
+  "devDependencies": {
+    "@app/interfaces": "workspace:*",
+    "@types/lodash": "^4.17.20",
+    "@types/pluralize": "^0.0.33"
+  },
+  "peerDependencies": {
+    "date-fns": "^3.6.0",
+    "lodash": "^4.17.21",
+    "p-min-delay": "^4.0.2",
+    "pluralize": "^8.0.0",
+    "vee-validate": "^4.13.2",
+    "vue": "^3.3.4",
+    "vuedraggable": "^4.1.0",
+    "vuetify": "3.7.0",
+    "yup": "^1.4.0"
+  },
+  "dependencies": {
+    "@vueuse/core": "^14.0.0"
+  },
+  "bundledDependencies": [
+    "@app/interfaces"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

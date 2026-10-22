@@ -1,0 +1,15 @@
+config:
+  aws:region: us-east-1
+  dns:domain: lx.tailor-cms.com
+  dns:hostedZoneId: Z03469864NDBKNYE5TS1
+  mail:host: email-smtp.us-east-1.amazonaws.com
+  mail:senderAddress: tailor@extensionengine.com
+  ssm:keyPrefix: lx/prod
+  lx:resourceNamePrefix: lx
+  # Reference an existing stack to reuse VPC, ECS cluster, and RDS database
+  lx:sharedStackRef: extensionengine/tailor-cms/prod
+  # Garment (S3 storage) configuration
+  garment:region: us-east-1
+  garment:bucket: tailor-prod
+  # AI configuration
+  ai:model: gpt-6-sol
